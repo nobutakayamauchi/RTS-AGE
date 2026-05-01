@@ -138,7 +138,8 @@ def build_request_body(
     if nim.seed is not None:
         body["seed"] = nim.seed
 
-    body["parallel_tool_calls"] = nim.parallel_tool_calls
+    if body.get("tools"):
+        body["parallel_tool_calls"] = nim.parallel_tool_calls
 
     # Handle non-standard parameters via extra_body
     extra_body: dict[str, Any] = {}
@@ -163,7 +164,7 @@ def build_request_body(
     _set_extra(extra_body, "min_tokens", nim.min_tokens, ignore_value=0)
     _set_extra(extra_body, "chat_template", nim.chat_template)
     _set_extra(extra_body, "request_id", nim.request_id)
-    _set_extra(extra_body, "ignore_eos", nim.ignore_eos)
+    _set_extra(extra_body, "ignore_eos", nim.ignore_eos, ignore_value=False)
 
     if extra_body:
         body["extra_body"] = extra_body
