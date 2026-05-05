@@ -1,5 +1,13 @@
 # AGENTIC DIRECTIVE
 
+- RTS-AGE is the RTS Agentic Gateway & Execution Lab.
+- This repo is implementation lab / factory / gateway, not canonical source.
+- It may generate validation reports, dry-run outputs, patch proposals, adapter prototypes, and RTS record proposals.
+- It must not store canonical RTS records, skill manifests, pack manifests, drive manifests, Talent Registry data, or Signal Feed data as source of truth.
+- Default operation is proposal-first.
+- Direct push, live SNS publish, live trading, credential storage, and automatic external mutation are prohibited by default.
+- Canonical definitions remain in their designated RTS repositories.
+
 > This file is identical to CLAUDE.md. Keep them in sync.
 
 ## CODING ENVIRONMENT
