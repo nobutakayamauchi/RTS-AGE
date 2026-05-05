@@ -2,6 +2,8 @@
 
 # 🤖 Free Claude Code
 
+> **RTS-AGE positioning (implementation lab / factory / gateway):** RTS-AGE is the **RTS Agentic Gateway & Execution Lab**. It receives data, work orders, and external signals, then generates implementation artifacts, validation reports, dry-run outputs, patch bundles, and RTS record proposals for canonical RTS repositories. It is not RTS core and not the canonical home of Skills, MCP Packs, Hermes Drives, Talent Registry, or Signal Feeds. This repository defaults to proposal-first operation (patch proposal / dry-run / validation report), with direct push, live publish, live trading, and external system mutation prohibited by default.
+
 Use Claude Code CLI, VS Code, JetBrains ACP, or chat bots through your own Anthropic-compatible proxy.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)

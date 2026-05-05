@@ -1,0 +1,11 @@
+patch_bundle_id: ""
+created_at: ""
+target_repo: ""
+target_paths: []
+generated_from: ""
+requires_human_review: true
+apply_mode: proposal_only
+confirmed_facts: []
+assumptions: []
+unverified: []
+risks: []

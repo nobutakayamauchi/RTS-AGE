@@ -1,0 +1,15 @@
+work_order_id: ""
+created_at: ""
+source_type: ""
+source_ref: ""
+intent: ""
+target_outputs: []
+target_repositories: []
+constraints:
+  allow_external_mutation: false
+  allow_direct_push: false
+  allow_live_execution: false
+confirmed_facts: []
+assumptions: []
+unverified: []
+risks: []
