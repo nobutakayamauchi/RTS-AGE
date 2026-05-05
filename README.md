@@ -2,6 +2,8 @@
 
 # 🤖 Free Claude Code
 
+> **RTS-AGE (RTS Agentic Gateway & Execution Lab)**: this repository is positioned as an implementation lab for reading RTS canonical manifests/registries/drive/record templates, validating cross-artifact consistency, performing dry-runs, and running adapter experiments. It is **not** a canonical source.
+
 Use Claude Code CLI, VS Code, JetBrains ACP, or chat bots through your own Anthropic-compatible proxy.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
