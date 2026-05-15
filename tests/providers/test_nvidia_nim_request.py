@@ -81,7 +81,18 @@ class TestBuildRequestBody:
         body = build_request_body(req, NimSettings(), thinking_enabled=True)
         assert "include_stop_str_in_output" not in body.get("extra_body", {})
 
+    def test_parallel_tool_calls_omitted_without_tools(self, req):
+        nim = NimSettings(parallel_tool_calls=False)
+        body = build_request_body(req, nim, thinking_enabled=True)
+        assert "parallel_tool_calls" not in body
+
     def test_parallel_tool_calls_included(self, req):
+        tool = MagicMock()
+        tool.name = "test_tool"
+        tool.description = "Test tool"
+        tool.input_schema = {"type": "object", "properties": {}}
+        req.tools = [tool]
+
         nim = NimSettings(parallel_tool_calls=False)
         body = build_request_body(req, nim, thinking_enabled=True)
         assert body["parallel_tool_calls"] is False
