@@ -15,10 +15,10 @@ def append_observer_decision(decision: ObserverDecision, path: str | Path) -> No
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     record = {
-        'timestamp': datetime.now(UTC).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         **asdict(decision),
     }
 
-    with output_path.open('a', encoding='utf-8') as f:
+    with output_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False, sort_keys=True))
-        f.write('\n')
+        f.write("\n")
