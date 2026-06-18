@@ -1,5 +1,5 @@
-from .models import ObserverDecision, ObserverPolicy, TaskInput
 from .classifier import classify_task
+from .models import ObserverDecision, ObserverPolicy, TaskInput
 from .scorer import score_fusion_need
 
 
@@ -12,9 +12,7 @@ def route_observer(task_input: TaskInput, policy: ObserverPolicy) -> ObserverDec
     score, score_reasons = score_fusion_need(classification, policy)
     use_fusion = should_use_fusion(score, policy)
 
-    selected_observer = (
-        policy.fusion_observer if use_fusion else policy.default_observer
-    )
+    selected_observer = policy.fusion_observer if use_fusion else policy.default_observer
 
     reasons = [*classification.reasons, *score_reasons]
 
