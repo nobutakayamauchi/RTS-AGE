@@ -21,8 +21,8 @@ class ObserverPolicy:
     fusion_trigger_score: int
     risk_weights: dict[str, int] = field(default_factory=dict)
     blocklist: set[str] = field(default_factory=set)
-    default_observer: str = 'default'
-    fusion_observer: str = 'fusion'
+    default_observer: str = "default"
+    fusion_observer: str = "fusion"
 
     def is_blocklisted(self, task_type: str) -> bool:
         return task_type in self.blocklist
