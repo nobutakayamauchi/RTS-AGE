@@ -1,8 +1,8 @@
-from .models import TaskInput, TaskClassification, ObserverPolicy, ObserverDecision
+from .models import ObserverDecision, ObserverPolicy, TaskClassification, TaskInput
 
 __all__ = [
-    'TaskInput',
-    'TaskClassification',
-    'ObserverPolicy',
-    'ObserverDecision',
+    "ObserverDecision",
+    "ObserverPolicy",
+    "TaskClassification",
+    "TaskInput",
 ]
