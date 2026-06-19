@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
+
+
+DEFAULT_OBSERVER_LOG_PATH = Path("logs/observer_decisions.jsonl")
 
 
 def _load_env_template() -> str:
@@ -58,3 +62,31 @@ def init() -> None:
     print(
         "Edit it to set your API keys and model preferences, then run: free-claude-code"
     )
+
+
+def observer_log() -> None:
+    """Print recent observer decision log entries."""
+    from core.observer_gate.log_reader import (
+        format_observer_decision_log_entries,
+        read_observer_decision_log,
+    )
+
+    parser = argparse.ArgumentParser(
+        prog="observer-log",
+        description="Show recent observer gate decision log entries.",
+    )
+    parser.add_argument(
+        "--path",
+        default=str(DEFAULT_OBSERVER_LOG_PATH),
+        help="Path to observer decision JSONL log.",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=20,
+        help="Maximum number of latest entries to show.",
+    )
+    args = parser.parse_args()
+
+    entries = read_observer_decision_log(args.path, limit=args.limit)
+    print(format_observer_decision_log_entries(entries))
