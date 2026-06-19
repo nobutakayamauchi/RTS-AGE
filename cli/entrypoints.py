@@ -1,13 +1,12 @@
 """CLI entry points for the installed package."""
 
-from __future__ import annotations
-
-from pathlib import Path
+DEFAULT_OBSERVER_LOG_PATH = "logs/observer_decisions.jsonl"
 
 
 def _load_env_template() -> str:
     """Load the canonical root env template from package resources or source."""
     import importlib.resources
+    from pathlib import Path
 
     packaged = importlib.resources.files("cli").joinpath("env.example")
     if packaged.is_file():
@@ -43,6 +42,8 @@ def serve() -> None:
 
 def init() -> None:
     """Scaffold config at ~/.config/free-claude-code/.env (registered as `fcc-init`)."""
+    from pathlib import Path
+
     config_dir = Path.home() / ".config" / "free-claude-code"
     env_file = config_dir / ".env"
 
@@ -58,3 +59,33 @@ def init() -> None:
     print(
         "Edit it to set your API keys and model preferences, then run: free-claude-code"
     )
+
+
+def observer_log() -> None:
+    """Print recent observer decision log entries."""
+    import argparse
+
+    from core.observer_gate.log_reader import (
+        format_observer_decision_log_entries,
+        read_observer_decision_log,
+    )
+
+    parser = argparse.ArgumentParser(
+        prog="observer-log",
+        description="Show recent observer gate decision log entries.",
+    )
+    parser.add_argument(
+        "--path",
+        default=DEFAULT_OBSERVER_LOG_PATH,
+        help="Path to observer decision JSONL log.",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=20,
+        help="Maximum number of latest entries to show.",
+    )
+    args = parser.parse_args()
+
+    entries = read_observer_decision_log(args.path, limit=args.limit)
+    print(format_observer_decision_log_entries(entries))
