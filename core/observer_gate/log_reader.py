@@ -90,7 +90,7 @@ def _entry_from_json_line(line: str) -> ObserverDecisionLogEntry | None:
             should_use_fusion=bool(raw["should_use_fusion"]),
             reasons=_string_list_field(raw, "reasons"),
         )
-    except (KeyError, TypeError, ValueError):
+    except KeyError, TypeError, ValueError:
         return None
 
 
