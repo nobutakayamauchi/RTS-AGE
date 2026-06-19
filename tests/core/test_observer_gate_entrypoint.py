@@ -7,7 +7,6 @@ from core.observer_gate.entrypoint import (
 )
 from core.observer_gate.models import TaskInput
 
-
 POLICY_TEXT = """
 version: 0.1
 
