@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 from .models import ObserverPolicy
 
@@ -27,7 +28,7 @@ def observer_policy_from_text(text: str) -> ObserverPolicy:
             str(key): int(value) for key, value in data["risk_weights"].items()
         }
         blocklist = {str(item) for item in data["blocklist"]}
-    except (KeyError, TypeError, ValueError) as e:
+    except (AttributeError, KeyError, TypeError, ValueError) as e:
         raise ObserverPolicyLoadError("invalid observer policy fields") from e
 
     return ObserverPolicy(
@@ -37,8 +38,8 @@ def observer_policy_from_text(text: str) -> ObserverPolicy:
     )
 
 
-def _parse_v0_policy(text: str) -> dict[str, object]:
-    result: dict[str, object] = {}
+def _parse_v0_policy(text: str) -> dict[str, Any]:
+    result: dict[str, Any] = {}
     current_section: str | None = None
     current_nested: str | None = None
 
@@ -121,7 +122,7 @@ def _split_key_value(text: str) -> tuple[str, str]:
     return key.strip(), value.strip()
 
 
-def _parse_scalar(value: str) -> object:
+def _parse_scalar(value: str) -> Any:
     if value == "":
         return ""
     try:
