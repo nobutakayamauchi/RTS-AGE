@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
 
@@ -66,6 +65,8 @@ def init() -> None:
 
 def observer_log() -> None:
     """Print recent observer decision log entries."""
+    import argparse
+
     from core.observer_gate.log_reader import (
         format_observer_decision_log_entries,
         read_observer_decision_log,
