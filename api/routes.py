@@ -5,10 +5,19 @@ from loguru import logger
 
 from config.settings import Settings
 from core.anthropic import get_token_count
+from core.observer_gate.entrypoint import (
+    evaluate_observer_gate,
+    is_observer_gate_enabled,
+)
+from core.observer_gate.models import TaskInput
 
 from . import dependencies
 from .dependencies import get_settings, require_api_key
 from .models.anthropic import MessagesRequest, TokenCountRequest
+from .models.observer_gate import (
+    ObserverGateProposalRequest,
+    ObserverGateProposalResponse,
+)
 from .models.responses import ModelResponse, ModelsListResponse
 from .services import ClaudeProxyService
 
@@ -106,6 +115,30 @@ async def count_tokens(
 async def probe_count_tokens(_auth=Depends(require_api_key)):
     """Respond to Claude compatibility probes for the token count endpoint."""
     return _probe_response("POST, HEAD, OPTIONS")
+
+
+@router.post(
+    "/internal/observer-gate/proposal",
+    response_model=ObserverGateProposalResponse,
+)
+async def propose_observer_gate(
+    request_data: ObserverGateProposalRequest,
+    _auth=Depends(require_api_key),
+) -> ObserverGateProposalResponse:
+    """Return a non-mutating observer routing proposal."""
+    task_input = TaskInput(task_id=request_data.task_id, text=request_data.text)
+    enabled = is_observer_gate_enabled()
+    decision = evaluate_observer_gate(task_input, enabled=enabled)
+
+    return ObserverGateProposalResponse(
+        observer_gate_enabled=enabled,
+        task_id=decision.task_id,
+        task_type=decision.task_type,
+        selected_observer=decision.selected_observer,
+        score=decision.score,
+        should_use_fusion=decision.should_use_fusion,
+        reasons=decision.reasons,
+    )
 
 
 @router.get("/")
