@@ -26,13 +26,19 @@ def run_observer_gate_summary_dry_run(log_path: str | Path) -> str:
     log_file = Path(log_path)
     decisions = [
         evaluate_observer_gate(
-            TaskInput(task_id="smoke-summary-high-risk", text=DEFAULT_HIGH_RISK_TASK_TEXT),
+            TaskInput(
+                task_id="smoke-summary-high-risk",
+                text=DEFAULT_HIGH_RISK_TASK_TEXT,
+            ),
             enabled=True,
             log_decision=True,
             log_path=log_file,
         ),
         evaluate_observer_gate(
-            TaskInput(task_id="smoke-summary-low-risk", text=DEFAULT_LOW_RISK_TASK_TEXT),
+            TaskInput(
+                task_id="smoke-summary-low-risk",
+                text=DEFAULT_LOW_RISK_TASK_TEXT,
+            ),
             enabled=True,
             log_decision=True,
             log_path=log_file,
