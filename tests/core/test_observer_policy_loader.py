@@ -8,7 +8,6 @@ from core.observer_gate.policy_loader import (
     observer_policy_from_text,
 )
 
-
 POLICY_TEXT = """
 version: 0.1
 
