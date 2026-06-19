@@ -3,9 +3,9 @@ from pathlib import Path
 import pytest
 
 from core.observer_gate.policy_loader import (
-    ObserverPolicyLoadError,
     load_observer_policy,
     observer_policy_from_text,
+    ObserverPolicyLoadError,
 )
 
 
