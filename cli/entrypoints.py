@@ -1,14 +1,12 @@
 """CLI entry points for the installed package."""
 
-from pathlib import Path
-
-
-DEFAULT_OBSERVER_LOG_PATH = Path("logs/observer_decisions.jsonl")
+DEFAULT_OBSERVER_LOG_PATH = "logs/observer_decisions.jsonl"
 
 
 def _load_env_template() -> str:
     """Load the canonical root env template from package resources or source."""
     import importlib.resources
+    from pathlib import Path
 
     packaged = importlib.resources.files("cli").joinpath("env.example")
     if packaged.is_file():
@@ -44,6 +42,8 @@ def serve() -> None:
 
 def init() -> None:
     """Scaffold config at ~/.config/free-claude-code/.env (registered as `fcc-init`)."""
+    from pathlib import Path
+
     config_dir = Path.home() / ".config" / "free-claude-code"
     env_file = config_dir / ".env"
 
@@ -76,7 +76,7 @@ def observer_log() -> None:
     )
     parser.add_argument(
         "--path",
-        default=str(DEFAULT_OBSERVER_LOG_PATH),
+        default=DEFAULT_OBSERVER_LOG_PATH,
         help="Path to observer decision JSONL log.",
     )
     parser.add_argument(
