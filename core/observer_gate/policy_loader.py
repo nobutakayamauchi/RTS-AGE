@@ -11,8 +11,8 @@ def load_observer_policy(path: str | Path) -> ObserverPolicy:
     """Load ObserverPolicy from the v0 YAML policy file.
 
     This intentionally supports only the small YAML subset used by
-    specs/multi_observer_v0.yaml. It avoids adding a runtime dependency while keeping
-    the policy outside core routing logic.
+    specs/multi_observer_v0.yaml. It avoids adding a runtime dependency while
+    keeping the policy outside core routing logic.
     """
     policy_path = Path(path)
     return observer_policy_from_text(policy_path.read_text(encoding="utf-8"))
@@ -106,7 +106,9 @@ def _parse_v0_policy(text: str) -> dict[str, object]:
 
         section_value = result[current_section]
         if not isinstance(section_value, dict):
-            raise ObserverPolicyLoadError(f"section is not a mapping: {current_section}")
+            raise ObserverPolicyLoadError(
+                f"section is not a mapping: {current_section}"
+            )
         section_value[key] = _parse_scalar(value)
 
     return result
