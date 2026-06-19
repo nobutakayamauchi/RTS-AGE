@@ -69,6 +69,38 @@ def format_observer_decision_report(report: ObserverDecisionReport) -> str:
     return "\n".join(lines)
 
 
+def format_observer_decision_report_markdown(report: ObserverDecisionReport) -> str:
+    """Format an observer decision report as Markdown."""
+    if report.total == 0:
+        return "# Observer Decision Report\n\nNo observer decision log entries found."
+
+    lines = [
+        "# Observer Decision Report",
+        "",
+        "## Summary",
+        "",
+        "| Metric | Value |",
+        "| --- | ---: |",
+        f"| Total decisions | {report.total} |",
+        f"| Fusion decisions | {report.fusion_count} |",
+        f"| Default observer decisions | {report.default_count} |",
+        f"| Average score | {report.average_score:.2f} |",
+        "",
+        "## Task types",
+        "",
+        *_format_markdown_count_rows(report.task_type_counts),
+        "",
+        "## Observers",
+        "",
+        *_format_markdown_count_rows(report.observer_counts),
+        "",
+        "## Top reasons",
+        "",
+        *_format_markdown_reason_rows(report.top_reasons),
+    ]
+    return "\n".join(lines)
+
+
 def _format_counts(counts: dict[str, int]) -> str:
     if not counts:
         return "none"
@@ -79,3 +111,19 @@ def _format_reason_counts(reason_counts: list[tuple[str, int]]) -> str:
     if not reason_counts:
         return "none"
     return ", ".join(f"{reason}:{count}" for reason, count in reason_counts)
+
+
+def _format_markdown_count_rows(counts: dict[str, int]) -> list[str]:
+    if not counts:
+        return ["No entries."]
+    rows = ["| Name | Count |", "| --- | ---: |"]
+    rows.extend(f"| {name} | {count} |" for name, count in sorted(counts.items()))
+    return rows
+
+
+def _format_markdown_reason_rows(reason_counts: list[tuple[str, int]]) -> list[str]:
+    if not reason_counts:
+        return ["No entries."]
+    rows = ["| Reason | Count |", "| --- | ---: |"]
+    rows.extend(f"| {reason} | {count} |" for reason, count in reason_counts)
+    return rows
