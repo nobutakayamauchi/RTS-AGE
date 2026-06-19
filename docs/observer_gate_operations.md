@@ -16,6 +16,7 @@ specs/multi_observer_v0.yaml
 -> ObserverDecision
 -> optional JSONL logging
 -> observer-log
+-> optional observer decision report
 ```
 
 ## Safety defaults
@@ -121,6 +122,71 @@ If no log exists, the command prints a friendly empty-state message.
 
 The output intentionally excludes request text and metadata.
 
+## Summary report
+
+Use summary mode to inspect aggregate observer routing behavior.
+
+```bash
+uv run observer-log --summary
+```
+
+Summary mode supports the same path and limit options:
+
+```bash
+uv run observer-log --path logs/observer_decisions.jsonl --limit 50 --summary
+```
+
+The summary report includes:
+
+- total decisions
+- Fusion decisions
+- default observer decisions
+- average score
+- task type counts
+- observer counts
+- top reasons
+
+The summary report is read-only and does not expose request text or metadata.
+
+## Dry-run smoke
+
+Use the dry-run smoke script to exercise the local observer gate loop without
+calling external services.
+
+```bash
+python smoke/observer_gate_dry_run.py
+```
+
+The dry-run flow is:
+
+```text
+TaskInput
+-> evaluate_observer_gate(enabled=True, log_decision=True)
+-> dry-run JSONL log
+-> read_observer_decision_log()
+-> format_observer_decision_log_entries()
+```
+
+The dry-run script writes to:
+
+```text
+logs/observer_decisions.dry_run.jsonl
+```
+
+It does not call external AI providers, Fusion, the provider registry, or task
+execution.
+
+## Decision report helper
+
+The report helper lives at:
+
+```text
+core/observer_gate/report.py
+```
+
+It summarizes already-read observer decision entries into aggregate metrics.
+It is intended for CLI, smoke, and future reporting integrations.
+
 ## Fusion policy
 
 Fusion is treated as a special observer, not as the core engine.
@@ -156,9 +222,11 @@ core/observer_gate/policy_loader.py
 core/observer_gate/entrypoint.py
 core/observer_gate/logger.py
 core/observer_gate/log_reader.py
+core/observer_gate/report.py
 api/models/observer_gate.py
 api/routes.py
 cli/entrypoints.py
+smoke/observer_gate_dry_run.py
 ```
 
 ## Operational checklist
@@ -171,14 +239,15 @@ Before enabling in a real workflow:
 4. If logging is enabled, confirm the log path is acceptable.
 5. Confirm no request text is written to the log.
 6. Inspect decisions with `uv run observer-log`.
-7. Keep external provider or Fusion calls behind a separate explicit adapter.
+7. Inspect aggregate behavior with `uv run observer-log --summary`.
+8. Use `python smoke/observer_gate_dry_run.py` before wiring real adapters.
+9. Keep external provider or Fusion calls behind a separate explicit adapter.
 
 ## Future work
 
 Recommended next steps:
 
 1. Add a real provider adapter only behind explicit configuration.
-2. Add a dry-run smoke test for the proposal endpoint.
-3. Add log rotation or retention policy if logs grow.
-4. Add a small report generator for observer decisions.
-5. Keep all future provider additions adapter-based, not hardcoded.
+2. Add log rotation or retention policy if logs grow.
+3. Add Markdown export for observer decision reports.
+4. Keep all future provider additions adapter-based, not hardcoded.
