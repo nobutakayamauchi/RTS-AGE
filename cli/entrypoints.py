@@ -1,7 +1,5 @@
 """CLI entry points for the installed package."""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 
