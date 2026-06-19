@@ -63,7 +63,10 @@ def test_is_observer_gate_logging_enabled_reads_true_values():
         is_observer_gate_logging_enabled({OBSERVER_GATE_LOG_ENABLED_ENV: "true"})
         is True
     )
-    assert is_observer_gate_logging_enabled({OBSERVER_GATE_LOG_ENABLED_ENV: "1"}) is True
+    assert (
+        is_observer_gate_logging_enabled({OBSERVER_GATE_LOG_ENABLED_ENV: "1"})
+        is True
+    )
 
 
 def test_is_observer_gate_logging_enabled_defaults_to_false():
@@ -71,7 +74,9 @@ def test_is_observer_gate_logging_enabled_defaults_to_false():
 
 
 def test_get_observer_gate_log_path_uses_configured_env_path():
-    path = get_observer_gate_log_path({OBSERVER_GATE_LOG_PATH_ENV: "tmp/observer.jsonl"})
+    path = get_observer_gate_log_path(
+        {OBSERVER_GATE_LOG_PATH_ENV: "tmp/observer.jsonl"}
+    )
     assert path == Path("tmp/observer.jsonl")
 
 
