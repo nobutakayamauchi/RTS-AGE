@@ -69,6 +69,10 @@ def observer_log() -> None:
         format_observer_decision_log_entries,
         read_observer_decision_log,
     )
+    from core.observer_gate.report import (
+        format_observer_decision_report,
+        summarize_observer_decisions,
+    )
 
     parser = argparse.ArgumentParser(
         prog="observer-log",
@@ -85,7 +89,17 @@ def observer_log() -> None:
         default=20,
         help="Maximum number of latest entries to show.",
     )
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help="Show aggregate observer decision metrics instead of raw entries.",
+    )
     args = parser.parse_args()
 
     entries = read_observer_decision_log(args.path, limit=args.limit)
+    if args.summary:
+        report = summarize_observer_decisions(entries)
+        print(format_observer_decision_report(report))
+        return
+
     print(format_observer_decision_log_entries(entries))
