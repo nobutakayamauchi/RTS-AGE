@@ -1,6 +1,7 @@
 from core.observer_gate.log_reader import ObserverDecisionLogEntry
 from core.observer_gate.report import (
     format_observer_decision_report,
+    format_observer_decision_report_markdown,
     summarize_observer_decisions,
 )
 
@@ -83,5 +84,58 @@ def test_format_observer_decision_report_does_not_include_request_text():
     assert "total=1" in output
     assert "fusion_count=1" in output
     assert "paid_delivery:1" in output
+    assert "secret text" not in output
+    assert "metadata" not in output
+
+
+def test_format_observer_decision_report_markdown_empty():
+    report = summarize_observer_decisions([])
+
+    output = format_observer_decision_report_markdown(report)
+
+    assert output == (
+        "# Observer Decision Report\n\nNo observer decision log entries found."
+    )
+
+
+def test_format_observer_decision_report_markdown_outputs_tables():
+    report = summarize_observer_decisions(
+        [
+            ObserverDecisionLogEntry(
+                timestamp="2026-06-19T00:00:00+00:00",
+                task_id="1",
+                task_type="paid_delivery",
+                selected_observer="fusion",
+                score=7,
+                should_use_fusion=True,
+                reasons=["paid_delivery: +3"],
+            ),
+            ObserverDecisionLogEntry(
+                timestamp="2026-06-19T00:01:00+00:00",
+                task_id="2",
+                task_type="memo_cleanup",
+                selected_observer="default",
+                score=0,
+                should_use_fusion=False,
+                reasons=["blocklist: memo_cleanup"],
+            ),
+        ]
+    )
+
+    output = format_observer_decision_report_markdown(report)
+
+    assert "# Observer Decision Report" in output
+    assert "## Summary" in output
+    assert "| Metric | Value |" in output
+    assert "| Total decisions | 2 |" in output
+    assert "| Fusion decisions | 1 |" in output
+    assert "| Default observer decisions | 1 |" in output
+    assert "| Average score | 3.50 |" in output
+    assert "## Task types" in output
+    assert "| paid_delivery | 1 |" in output
+    assert "## Observers" in output
+    assert "| fusion | 1 |" in output
+    assert "## Top reasons" in output
+    assert "| paid_delivery: +3 | 1 |" in output
     assert "secret text" not in output
     assert "metadata" not in output
