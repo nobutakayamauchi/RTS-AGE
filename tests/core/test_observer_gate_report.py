@@ -93,7 +93,9 @@ def test_format_observer_decision_report_markdown_empty():
 
     output = format_observer_decision_report_markdown(report)
 
-    assert output == "# Observer Decision Report\n\nNo observer decision log entries found."
+    assert output == (
+        "# Observer Decision Report\n\nNo observer decision log entries found."
+    )
 
 
 def test_format_observer_decision_report_markdown_outputs_tables():
