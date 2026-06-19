@@ -1,6 +1,6 @@
 import os
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Mapping
 
 from .models import ObserverDecision, TaskInput
 from .policy_loader import load_observer_policy
