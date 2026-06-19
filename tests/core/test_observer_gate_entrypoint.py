@@ -64,8 +64,7 @@ def test_is_observer_gate_logging_enabled_reads_true_values():
         is True
     )
     assert (
-        is_observer_gate_logging_enabled({OBSERVER_GATE_LOG_ENABLED_ENV: "1"})
-        is True
+        is_observer_gate_logging_enabled({OBSERVER_GATE_LOG_ENABLED_ENV: "1"}) is True
     )
 
 
