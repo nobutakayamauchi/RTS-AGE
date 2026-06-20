@@ -103,3 +103,10 @@ def observer_log() -> None:
         return
 
     print(format_observer_decision_log_entries(entries))
+
+
+def observer_provider_dry_run() -> None:
+    """Run the local observer provider dry-run smoke flow."""
+    from smoke.observer_provider_dry_run import run_observer_provider_dry_run
+
+    print(run_observer_provider_dry_run())
