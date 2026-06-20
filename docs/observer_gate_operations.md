@@ -6,6 +6,28 @@ The observer gate is designed to treat AI providers as observers, not as a
 single final authority. It classifies work, scores risk, proposes a routing
 choice, optionally logs the decision, and lets operators inspect those logs.
 
+## Phase 1 completion status
+
+Observer Gate Phase 1 is the safe foundation layer.
+
+It includes:
+
+- policy loading
+- feature-flagged gate evaluation
+- proposal-only internal API endpoint
+- optional JSONL decision logging
+- log reader
+- `observer-log` CLI
+- summary reports
+- Markdown report formatting
+- dry-run smoke scripts
+- provider adapter interface
+- provider adapter registry
+- provider adapter configuration models
+- operations and architecture documentation
+
+It intentionally does not include live provider execution.
+
 ## Current flow
 
 ```text
@@ -17,7 +39,20 @@ specs/multi_observer_v0.yaml
 -> optional JSONL logging
 -> observer-log
 -> optional observer decision report
+-> optional Markdown report formatting
 ```
+
+## Provider boundary flow
+
+```text
+ObserverProviderAdapterConfig
+-> ObserverProviderRegistry
+-> ObserverProviderAdapter
+-> future provider implementation
+```
+
+The provider boundary is present, but no real provider adapter is wired into the
+Observer Gate runtime yet.
 
 ## Safety defaults
 
@@ -26,7 +61,7 @@ The observer gate is safe by default.
 - It is disabled unless explicitly enabled.
 - It does not call external AI providers.
 - It does not call Fusion.
-- It does not change the provider registry.
+- It does not create adapters from configuration.
 - It does not execute tasks.
 - It does not log request text.
 - It returns or records routing metadata only.
@@ -85,7 +120,7 @@ Example request:
 ```json
 {
   "task_id": "demo-1",
-  "text": "顧客納品用の公開営業LPをレビューして"
+  "text": "Review a public paid deliverable before release"
 }
 ```
 
@@ -148,6 +183,20 @@ The summary report includes:
 
 The summary report is read-only and does not expose request text or metadata.
 
+## Markdown report formatter
+
+Markdown report formatting is available in the core report helper.
+
+```text
+core/observer_gate/report.py
+```
+
+The Markdown formatter is intended for future artifacts, GitHub comments,
+weekly reports, or generated summaries.
+
+It is formatting-only. It does not call providers, execute tasks, or expose
+request text.
+
 ## Dry-run smoke
 
 Use the dry-run smoke script to exercise the local observer gate loop without
@@ -176,6 +225,18 @@ logs/observer_decisions.dry_run.jsonl
 It does not call external AI providers, Fusion, the provider registry, or task
 execution.
 
+## Summary dry-run smoke
+
+Use the summary dry-run smoke script to exercise both raw decision output and
+aggregate reporting.
+
+```bash
+python smoke/observer_gate_summary_dry_run.py
+```
+
+This script is also local-only and does not call external providers, Fusion, or
+task execution.
+
 ## Decision report helper
 
 The report helper lives at:
@@ -186,6 +247,25 @@ core/observer_gate/report.py
 
 It summarizes already-read observer decision entries into aggregate metrics.
 It is intended for CLI, smoke, and future reporting integrations.
+
+## Provider boundary
+
+Provider boundary files are present for the next phase:
+
+```text
+core/observer_gate/provider_adapter.py
+core/observer_gate/provider_registry.py
+core/observer_gate/provider_config.py
+```
+
+Current status:
+
+- `provider_adapter.py` defines request, response, error, result, and protocol types.
+- `provider_registry.py` stores adapter instances without calling them.
+- `provider_config.py` stores adapter configuration data without creating adapters.
+
+These files are boundary definitions only. They do not call OpenAI, Claude,
+Fusion, local models, or any provider runtime.
 
 ## Fusion policy
 
@@ -213,6 +293,7 @@ Do not use it for:
 
 ```text
 docs/architecture/multi_observer_architecture.md
+docs/observer_gate_operations.md
 specs/multi_observer_v0.yaml
 core/observer_gate/models.py
 core/observer_gate/classifier.py
@@ -223,10 +304,14 @@ core/observer_gate/entrypoint.py
 core/observer_gate/logger.py
 core/observer_gate/log_reader.py
 core/observer_gate/report.py
+core/observer_gate/provider_adapter.py
+core/observer_gate/provider_registry.py
+core/observer_gate/provider_config.py
 api/models/observer_gate.py
 api/routes.py
 cli/entrypoints.py
 smoke/observer_gate_dry_run.py
+smoke/observer_gate_summary_dry_run.py
 ```
 
 ## Operational checklist
@@ -241,13 +326,18 @@ Before enabling in a real workflow:
 6. Inspect decisions with `uv run observer-log`.
 7. Inspect aggregate behavior with `uv run observer-log --summary`.
 8. Use `python smoke/observer_gate_dry_run.py` before wiring real adapters.
-9. Keep external provider or Fusion calls behind a separate explicit adapter.
+9. Use `python smoke/observer_gate_summary_dry_run.py` before report changes.
+10. Keep external provider or Fusion calls behind a separate explicit adapter.
+11. Keep real provider execution behind explicit opt-in configuration.
 
-## Future work
+## Phase 2 candidates
 
 Recommended next steps:
 
-1. Add a real provider adapter only behind explicit configuration.
-2. Add log rotation or retention policy if logs grow.
-3. Add Markdown export for observer decision reports.
-4. Keep all future provider additions adapter-based, not hardcoded.
+1. Add a local dummy adapter.
+2. Add an adapter config loader.
+3. Build a registry from config without executing providers.
+4. Add provider dry-run smoke.
+5. Add a real provider adapter only behind explicit configuration.
+6. Add log rotation or retention policy if logs grow.
+7. Keep all future provider additions adapter-based, not hardcoded.
