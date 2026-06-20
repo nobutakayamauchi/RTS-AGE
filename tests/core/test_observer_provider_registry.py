@@ -69,11 +69,12 @@ def test_registered_adapter_can_observe_without_registry_calling_it():
     request = ObserverProviderRequest(
         task_id="task-1",
         task_type="memo_cleanup",
-        prompt="メモを整理して",
+        prompt="memo cleanup",
     )
 
     response = registry.require("local").observe(request)
 
+    assert isinstance(response, ObserverProviderResponse)
     assert response.provider_id == "local"
     assert response.observer_name == "default"
     assert response.output == "observed:task-1"
