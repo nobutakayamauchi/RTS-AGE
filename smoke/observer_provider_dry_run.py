@@ -16,6 +16,7 @@ from core.observer_gate.provider_config_loader import (
 from core.observer_gate.provider_registry_builder import (
     build_observer_provider_registry_from_config,
 )
+from core.observer_gate.provider_report import format_observer_provider_result
 
 
 def run_observer_provider_dry_run() -> str:
@@ -46,10 +47,8 @@ def run_observer_provider_dry_run() -> str:
     return "\n".join(
         [
             "Observer provider dry-run complete.",
-            f"provider_id={response.provider_id}",
-            f"observer_name={response.observer_name}",
-            f"model={response.model}",
-            f"output={response.output}",
+            "",
+            format_observer_provider_result(response),
         ]
     )
 
