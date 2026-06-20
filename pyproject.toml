@@ -28,6 +28,7 @@ dependencies = [
 free-claude-code = "cli.entrypoints:serve"
 fcc-init = "cli.entrypoints:init"
 observer-log = "cli.entrypoints:observer_log"
+observer-provider-dry-run = "cli.entrypoints:observer_provider_dry_run"
 
 [project.optional-dependencies]
 voice = [
@@ -43,7 +44,7 @@ voice_local = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["api", "cli", "config", "core", "messaging", "providers"]
+packages = ["api", "cli", "config", "core", "messaging", "providers", "smoke"]
 
 [tool.hatch.build.targets.wheel.force-include]
 ".env.example" = "cli/env.example"
