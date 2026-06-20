@@ -1,7 +1,7 @@
 """Build observer provider registries from explicit configuration.
 
 This module creates local-only adapter instances from safe configuration. It does
-not call adapters, call external services, call Fusion, or execute tasks.
+not perform runtime provider work.
 """
 
 from __future__ import annotations
@@ -34,8 +34,7 @@ def _create_adapter(
 ) -> LocalObserverProviderAdapter:
     if adapter_config.adapter_kind != "local":
         raise ObserverProviderRegistryBuildError(
-            "unsupported observer provider adapter kind: "
-            f"{adapter_config.adapter_kind}"
+            f"unsupported observer provider adapter kind: {adapter_config.adapter_kind}"
         )
 
     return LocalObserverProviderAdapter(
