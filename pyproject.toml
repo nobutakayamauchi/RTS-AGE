@@ -29,6 +29,7 @@ free-claude-code = "cli.entrypoints:serve"
 fcc-init = "cli.entrypoints:init"
 observer-log = "cli.entrypoints:observer_log"
 observer-provider-dry-run = "cli.entrypoints:observer_provider_dry_run"
+age-planning-dry-run = "cli.entrypoints:age_planning_dry_run"
 
 [project.optional-dependencies]
 voice = [
