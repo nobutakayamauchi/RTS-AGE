@@ -110,3 +110,23 @@ def observer_provider_dry_run() -> None:
     from smoke.observer_provider_dry_run import run_observer_provider_dry_run
 
     print(run_observer_provider_dry_run())
+
+
+def age_planning_dry_run() -> None:
+    """Run the local AGE planning dry-run artifact generator."""
+    import argparse
+
+    from smoke.age_planning_dry_run import run_age_planning_dry_run
+
+    parser = argparse.ArgumentParser(
+        prog="age-planning-dry-run",
+        description="Generate local AGE planning dry-run artifacts.",
+    )
+    parser.add_argument(
+        "--output-root",
+        default=".",
+        help="Root directory where outputs/ and logs/ are written.",
+    )
+    args = parser.parse_args()
+
+    print(run_age_planning_dry_run(args.output_root))
