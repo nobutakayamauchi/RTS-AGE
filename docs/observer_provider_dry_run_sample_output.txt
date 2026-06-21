@@ -1,0 +1,24 @@
+# Observer provider dry-run sample output
+
+Command:
+
+    observer-provider-dry-run
+
+Expected output:
+
+    Observer provider dry-run complete.
+
+    status=ok | provider_id=local | observer_name=default | model=local-deterministic-v0 | output=local_observation task_id=smoke-provider-local task_type=memo_cleanup
+
+Safety notes:
+
+- Local dry-run only.
+- No remote runtime calls.
+- No model calls.
+- No task execution.
+- No credential handling.
+- No private prompt text should appear in output.
+
+Reconstruction note:
+
+This sample records the stable output shape for the Phase 2 local observer provider boundary after the CLI entry point was added.
