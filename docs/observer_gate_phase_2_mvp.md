@@ -57,6 +57,19 @@ Observer provider dry-run complete.
 status=ok | provider_id=local | observer_name=default | model=local-deterministic-v0 | output=local_observation task_id=smoke-provider-local task_type=memo_cleanup
 ```
 
+## User-facing follow-up artifacts
+
+The local provider boundary is now linked to user-facing operator materials:
+
+```text
+cli/entrypoints.py
+docs/observer_provider_dry_run_operations.md
+docs/observer_provider_dry_run_sample_output.txt
+tests/cli/test_observer_provider_dry_run_cli.py
+```
+
+Use `docs/observer_provider_dry_run_sample_output.txt` as the stable reference output when comparing future CLI/report changes.
+
 ## Files added in Phase 2
 
 ```text
@@ -72,11 +85,11 @@ smoke/observer_provider_dry_run.py
 
 ## Next candidates
 
-The next phase can connect this safe local boundary to user-facing operations.
+The next phase can connect this safe local boundary to AGE builder capability planning.
 
 Recommended next steps:
 
-1. Add a CLI command for the local provider dry-run.
-2. Add an operations guide for provider config and local dry-runs.
-3. Add a sealed sample output artifact for reconstruction.
+1. Add an AGE builder capability target for RTS Adapt Engine.
+2. Add a fixed RTS Adapt Engine spec document.
+3. Add a v0.1 MVP scope extraction document.
 4. Keep any remote adapter work behind explicit configuration and tests.

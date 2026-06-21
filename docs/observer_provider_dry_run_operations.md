@@ -36,6 +36,16 @@ status=ok | provider_id=local | observer_name=default | model=local-deterministi
 
 The exact formatting is intentionally plain text so it can be copied into logs, tickets, or reconstruction notes.
 
+## Sample output artifact
+
+A stable sample output artifact is stored at:
+
+```text
+docs/observer_provider_dry_run_sample_output.txt
+```
+
+Use this artifact as the fixed reference when comparing future CLI/report changes.
+
 ## Success criteria
 
 A successful run should show:
@@ -110,6 +120,7 @@ core/observer_gate/provider_report.py
 core/observer_gate/local_adapter.py
 core/observer_gate/provider_registry_builder.py
 core/observer_gate/provider_config_loader.py
+docs/observer_provider_dry_run_sample_output.txt
 tests/cli/test_observer_provider_dry_run_cli.py
 tests/smoke/test_observer_provider_dry_run.py
 ```
