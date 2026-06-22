@@ -8,9 +8,11 @@ from pathlib import Path
 
 
 def test_rts_adapt_engine_scaffold_files_exist():
-    """The scaffold PR adds the required local input and command files."""
+    """The scaffold includes the local input and parser command files."""
     assert Path("inputs/daily_input.md").is_file()
     assert Path("src/generate.py").is_file()
+    assert Path("src/input_reader.py").is_file()
+    assert Path("src/section_parser.py").is_file()
     assert Path("outputs").is_dir()
     assert Path("logs").is_dir()
 
@@ -25,7 +27,10 @@ def test_rts_adapt_engine_scaffold_command_runs():
     )
 
     assert result.returncode == 0
-    assert "RTS Adapt Engine v0.1 scaffold ready." in result.stdout
+    assert "RTS Adapt Engine v0.1 input parser ready." in result.stdout
+    assert "present_sections=" in result.stdout
+    assert "missing_sections=" in result.stdout
+    assert "unknown_sections=" in result.stdout
     assert "generation_not_implemented=true" in result.stdout
     assert "external_api_calls=false" in result.stdout
     assert "publishing=false" in result.stdout
