@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from smoke.age_planning_dry_run import LOG_PATH, run_age_planning_dry_run
 
+FIXTURE_ROOT = Path("fixtures/age_planning_dry_run")
+
 
 def test_age_planning_dry_run_writes_expected_artifacts(tmp_path):
-    """The dry-run writes local planning artifacts and a JSONL log."""
+    """The dry-run writes runtime artifacts under the requested root."""
     report = run_age_planning_dry_run(tmp_path)
 
     assert "AGE planning dry-run complete." in report
@@ -48,3 +51,19 @@ def test_age_planning_dry_run_pr_plan_preserves_no_api_boundary(tmp_path):
     assert "PR-01: Add project scaffold" in pr_plan
     assert "No generators, connectors, or API calls." in pr_plan
     assert "Human review is required before implementation starts." in pr_plan
+
+
+def test_age_planning_fixture_package_is_checked_in():
+    """Checked-in samples live under fixtures, not runtime output paths."""
+    expected_fixture_files = [
+        "outputs/age/spec_intake_summary.md",
+        "outputs/age/v0_1_scope_summary.md",
+        "outputs/age/pr_plan.md",
+        "outputs/age/scaffold_plan.md",
+        "outputs/age/smoke_test_plan.md",
+        "outputs/age/review_checklist.md",
+        "logs/age_builder_execution_log.jsonl",
+    ]
+
+    for relative_path in expected_fixture_files:
+        assert (FIXTURE_ROOT / relative_path).is_file()
