@@ -12,3 +12,11 @@ debug-*.log
 .coverage
 llama_cache
 .smoke-results
+
+# Runtime generated artifacts
+outputs/**
+!outputs/.gitkeep
+logs/**
+!logs/.gitkeep
+runs/**
+!runs/.gitkeep

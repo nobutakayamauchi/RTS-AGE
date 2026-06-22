@@ -1,8 +1,11 @@
 """Local dry-run generator for AGE planning output artifacts.
 
 This module stays on the safe local path. It writes deterministic planning
-artifacts for the RTS Adapt Engine v0.1 target and appends a JSONL execution
+artifacts under the caller-provided output root and appends a JSONL execution
 record. It does not call models, external APIs, connectors, or publishing paths.
+
+Checked-in sample outputs live under fixtures/age_planning_dry_run/. Runtime
+outputs belong under outputs/, logs/, or a caller-provided temporary directory.
 """
 
 from __future__ import annotations
