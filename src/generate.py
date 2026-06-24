@@ -2,8 +2,9 @@
 
 This command validates the local file layout, reads the daily input, parses
 supported Markdown sections, writes a context summary, writes deterministic
-reviewable draft outputs, writes a human review checklist, and appends a local
-execution log record. It does not call external APIs or publish content.
+reviewable draft outputs, writes a human review checklist, appends a local
+execution log record, and writes an output manifest. It does not call external
+APIs or publish content.
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from src.generators.video_script import build_video_script
 from src.generators.x_posts import build_x_posts
 from src.input_reader import InputReadError, read_daily_input
 from src.normalizer import build_context_summary
+from src.output_index import build_output_manifest, write_output_manifest
 from src.review.checklist import build_review_checklist
 from src.section_parser import ParsedDailyInput, parse_daily_input
 
@@ -29,6 +31,7 @@ NOTE_DRAFT_PATH = OUTPUT_DIR / "note_draft.md"
 LINE_MESSAGE_PATH = OUTPUT_DIR / "line_message.md"
 VIDEO_SCRIPT_PATH = OUTPUT_DIR / "video_script.md"
 REVIEW_CHECKLIST_PATH = OUTPUT_DIR / "review_checklist.md"
+OUTPUT_MANIFEST_PATH = OUTPUT_DIR / "output_manifest.json"
 EXECUTION_LOG_PATH = LOG_DIR / "execution_log.jsonl"
 
 
@@ -105,8 +108,21 @@ def write_execution_log(
     return append_execution_record(EXECUTION_LOG_PATH, record)
 
 
+def write_generated_output_manifest(
+    generated_paths: tuple[Path, ...],
+    execution_log_path: Path,
+) -> Path:
+    """Write a manifest for generated local output files."""
+    record = build_output_manifest(
+        input_path=INPUT_PATH,
+        generated_paths=generated_paths,
+        execution_log_path=execution_log_path,
+    )
+    return write_output_manifest(OUTPUT_MANIFEST_PATH, record)
+
+
 def main() -> int:
-    """Run the local parser, generators, checklist, and execution logger."""
+    """Run the local parser, generators, checklist, logger, and manifest writer."""
     ensure_scaffold_paths()
 
     try:
@@ -125,6 +141,15 @@ def main() -> int:
         written_draft_paths,
         review_checklist_path,
     )
+    generated_output_paths = (
+        CONTEXT_SUMMARY_PATH,
+        *written_draft_paths,
+        review_checklist_path,
+    )
+    output_manifest_path = write_generated_output_manifest(
+        generated_output_paths,
+        execution_log_path,
+    )
 
     print("RTS Adapt Engine v0.1 draft generators ready.")
     print(f"input_path={INPUT_PATH}")
@@ -133,6 +158,7 @@ def main() -> int:
         print(f"draft_output_path={path}")
     print(f"review_checklist_path={review_checklist_path}")
     print(f"execution_log_path={execution_log_path}")
+    print(f"output_manifest_path={output_manifest_path}")
     print(f"output_dir={OUTPUT_DIR}")
     print(f"log_dir={LOG_DIR}")
     print(f"present_sections={len(parsed.present_sections)}")
@@ -141,6 +167,7 @@ def main() -> int:
     print("draft_generation_implemented=true")
     print("review_checklist_implemented=true")
     print("execution_log_implemented=true")
+    print("output_manifest_implemented=true")
     print("external_api_calls=false")
     print("publishing=false")
     return 0
