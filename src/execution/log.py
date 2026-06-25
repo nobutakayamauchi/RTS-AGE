@@ -6,6 +6,7 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from src.section_parser import ParsedDailyInput
 
@@ -19,15 +20,16 @@ def _path_strings(paths: tuple[Path, ...]) -> list[str]:
     return [str(path) for path in paths]
 
 
-def build_run_id(created_at: str) -> str:
-    """Build a compact run id from an execution timestamp."""
+def build_run_id(created_at: str, entropy: str | None = None) -> str:
+    """Build a compact run id from timestamp plus per-run entropy."""
     safe_timestamp = (
         created_at.replace("-", "")
         .replace(":", "")
         .replace(".", "")
         .replace("+", "")
     )
-    return f"run-{safe_timestamp.lower()}"
+    entropy_value = entropy or uuid4().hex[:12]
+    return f"run-{safe_timestamp.lower()}-{entropy_value.lower()}"
 
 
 def build_execution_record(
