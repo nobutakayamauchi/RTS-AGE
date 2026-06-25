@@ -19,6 +19,17 @@ def _path_strings(paths: tuple[Path, ...]) -> list[str]:
     return [str(path) for path in paths]
 
 
+def build_run_id(created_at: str) -> str:
+    """Build a compact run id from an execution timestamp."""
+    safe_timestamp = (
+        created_at.replace("-", "")
+        .replace(":", "")
+        .replace(".", "")
+        .replace("+", "")
+    )
+    return f"run-{safe_timestamp.lower()}"
+
+
 def build_execution_record(
     *,
     input_path: Path,
@@ -27,17 +38,26 @@ def build_execution_record(
     review_checklist_path: Path,
     parsed: ParsedDailyInput,
     created_at: str | None = None,
+    run_id: str | None = None,
     status: str = "completed",
+    next_action: str = "manual_review",
 ) -> dict[str, Any]:
     """Build a JSON-serializable local execution record."""
+    created_at_value = created_at or utc_timestamp()
     output_paths = (context_summary_path, *draft_paths, review_checklist_path)
+    generated_files = _path_strings(output_paths)
 
     return {
         "schema_version": "rts-adapt-engine.execution-log.v0.1",
-        "created_at": created_at or utc_timestamp(),
+        "run_id": run_id or build_run_id(created_at_value),
+        "created_at": created_at_value,
         "status": status,
+        "input_file": str(input_path),
+        "generated_files": generated_files,
+        "review_required": True,
+        "next_action": next_action,
         "input_path": str(input_path),
-        "output_paths": _path_strings(output_paths),
+        "output_paths": generated_files,
         "context_summary_path": str(context_summary_path),
         "draft_output_paths": _path_strings(draft_paths),
         "review_checklist_path": str(review_checklist_path),
@@ -48,7 +68,6 @@ def build_execution_record(
         "publishing": False,
         "sending": False,
         "credentials_required": False,
-        "review_required": True,
     }
 
 
