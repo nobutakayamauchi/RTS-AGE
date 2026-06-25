@@ -20,8 +20,17 @@ SAMPLE_INPUT = """# 今日の現状
 """
 
 
-def test_build_run_id_uses_timestamp():
-    assert build_run_id("2026-06-23T00:00:00Z") == "run-20260623t000000z"
+def test_build_run_id_uses_timestamp_and_entropy():
+    assert build_run_id("2026-06-23T00:00:00Z", entropy="abc123") == "run-20260623t000000z-abc123"
+
+
+def test_build_run_id_generates_unique_ids_without_explicit_entropy():
+    first = build_run_id("2026-06-23T00:00:00Z")
+    second = build_run_id("2026-06-23T00:00:00Z")
+
+    assert first != second
+    assert first.startswith("run-20260623t000000z-")
+    assert second.startswith("run-20260623t000000z-")
 
 
 def test_build_execution_record_is_json_serializable_and_safe():
@@ -37,10 +46,11 @@ def test_build_execution_record_is_json_serializable_and_safe():
         review_checklist_path=Path("outputs/review_checklist.md"),
         parsed=parsed,
         created_at="2026-06-23T00:00:00Z",
+        run_id="run-test",
     )
 
     assert record["schema_version"] == "rts-adapt-engine.execution-log.v0.1"
-    assert record["run_id"] == "run-20260623t000000z"
+    assert record["run_id"] == "run-test"
     assert record["created_at"] == "2026-06-23T00:00:00Z"
     assert record["status"] == "completed"
     assert record["input_file"] == "inputs/daily_input.md"
@@ -64,6 +74,25 @@ def test_build_execution_record_is_json_serializable_and_safe():
     assert record["credentials_required"] is False
 
     json.dumps(record, ensure_ascii=False, sort_keys=True)
+
+
+def test_build_execution_record_generates_unique_run_ids_by_default():
+    parsed = parse_daily_input(SAMPLE_INPUT)
+    common_kwargs = {
+        "input_path": Path("inputs/daily_input.md"),
+        "context_summary_path": Path("outputs/context_summary.md"),
+        "draft_paths": (Path("outputs/x_posts.md"),),
+        "review_checklist_path": Path("outputs/review_checklist.md"),
+        "parsed": parsed,
+        "created_at": "2026-06-23T00:00:00Z",
+    }
+
+    first = build_execution_record(**common_kwargs)
+    second = build_execution_record(**common_kwargs)
+
+    assert first["run_id"] != second["run_id"]
+    assert first["run_id"].startswith("run-20260623t000000z-")
+    assert second["run_id"].startswith("run-20260623t000000z-")
 
 
 def test_build_execution_record_allows_explicit_run_id_and_next_action():
@@ -93,6 +122,7 @@ def test_append_execution_record_writes_one_jsonl_line(tmp_path):
         review_checklist_path=Path("outputs/review_checklist.md"),
         parsed=parsed,
         created_at="2026-06-23T00:00:00Z",
+        run_id="run-test",
     )
     log_path = tmp_path / "logs" / "execution_log.jsonl"
 
@@ -103,7 +133,7 @@ def test_append_execution_record_writes_one_jsonl_line(tmp_path):
     assert len(lines) == 1
     loaded = json.loads(lines[0])
     assert loaded["schema_version"] == "rts-adapt-engine.execution-log.v0.1"
-    assert loaded["run_id"] == "run-20260623t000000z"
+    assert loaded["run_id"] == "run-test"
     assert loaded["input_file"] == "inputs/daily_input.md"
     assert loaded["generated_files"] == [
         "outputs/context_summary.md",
