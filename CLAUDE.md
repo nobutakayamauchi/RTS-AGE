@@ -37,6 +37,100 @@ Disallowed by default:
 
 Canonical definitions must remain in their designated RTS repositories.
 
+## MINIMUM ALIVE RESCUE MODE
+
+This repository is currently in RESCUE / GATEWAY stabilization mode.
+
+The goal is not to complete, redesign, or broaden the repository.
+
+The goal is to make the existing repository safe to resume by clarifying:
+
+- repository identity
+- AI operating boundaries
+- next safe tasks
+- prohibited mutations
+- provider/proxy versus RTS-AGE gateway responsibilities
+
+Before implementation work, read:
+
+1. `docs/STATUS.md`
+2. `docs/AI_CONTEXT.md`
+3. `docs/NEXT.md`
+4. `README.md`
+
+If those documents conflict with a task instruction, stop and report the conflict instead of guessing.
+
+## DEFAULT AI OPERATING MODE
+
+Use strict minimal patch mode unless the task explicitly says otherwise.
+
+Prefer:
+
+- small diffs
+- reviewable changes
+- documentation before migration
+- proposals before irreversible changes
+- validation reports before deployment
+
+Do not improve unrelated files.
+
+Do not generalize this repository for hypothetical beginner users.
+
+Do not weaken RTS-AGE gateway boundaries for convenience.
+
+## FORBIDDEN BY DEFAULT
+
+Do not perform any of the following without explicit operator approval in the current task:
+
+- direct push to canonical RTS repositories
+- live publish
+- live trading
+- external API mutation
+- external account mutation
+- credential creation or storage
+- dependency replacement
+- broad refactor
+- architecture rewrite
+- schema rewrite
+- manifest format rewrite
+- log format rewrite
+- cross-repository migration
+- automatic deployment
+
+If a task appears to require one of these, stop and write a proposal.
+
+## CHANGE SCOPE RULE
+
+Before editing, identify:
+
+- files you plan to change
+- files you will not touch
+- assumptions
+- risks
+- stop conditions
+
+After editing, report:
+
+- changed files
+- what changed
+- what did not change
+- validation performed
+- remaining risks
+- recommended next task
+
+## UNKNOWN HANDLING
+
+When uncertain, classify the unknown as:
+
+- product unknown
+- architecture unknown
+- runtime unknown
+- dependency unknown
+- security unknown
+- operator intent unknown
+
+Then either proceed with the smallest safe assumption or stop with a proposal.
+
 ## CODING ENVIRONMENT
 
 - Install astral uv using "curl -LsSf https://astral.sh/uv/install.sh | sh" if not already installed and if already installed then update it to the latest version
