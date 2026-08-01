@@ -17,7 +17,16 @@ if [[ -z "$PYTHON_BIN" ]]; then
   fi
 fi
 
+INITIALIZE_ENV=0
 if [[ ! -f .env ]]; then
+  INITIALIZE_ENV=1
+elif grep -q '^LLH_ADMIN_PASSWORD=replace-me$' .env \
+  && grep -q '^LLH_ADMIN_ACTION_TOKEN=replace-me$' .env; then
+  printf '%s\n' 'Incomplete placeholder .env detected; regenerating test secrets.'
+  INITIALIZE_ENV=1
+fi
+
+if [[ "$INITIALIZE_ENV" -eq 1 ]]; then
   cp .env.example .env
   ADMIN_PASSWORD="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(18))')"
   ACTION_TOKEN="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
