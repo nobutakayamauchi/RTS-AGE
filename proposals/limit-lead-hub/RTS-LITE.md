@@ -23,7 +23,7 @@ GitHubに置くのはコードと空の構造だけ。実リード情報は置�
 
 - `proposals/limit-lead-hub/**`
 - proposal documentation
-- manual tests
+- static and manual tests
 - draft PR metadata
 
 ### Protected
@@ -51,12 +51,13 @@ GitHubに置くのはコードと空の構造だけ。実リード情報は置�
 - audit log
 - two-step unsubscribe handling
 - setup and operations docs
+- reproducible static contract test
 - manual test plan
 
 ## EVIDENCE
 
 - JavaScript static syntax check: `PASS` using Node V8-compatible syntax check
-- Pure-function static contract checks: `PASS`
+- Static contract test: `PASS` via `node tests/static-contract.test.cjs`
 - Source review: `PASS_WITH_LIMITATIONS`
 - Google Apps Script live execution: `PENDING`
 - Gmail/MailApp delivery: `PENDING`
@@ -84,7 +85,7 @@ GitHubに置くのはコードと空の構造だけ。実リード情報は置�
 
 ## NEXT ACTION
 
-1. Open draft PR for static review
+1. Review draft PR
 2. User creates or chooses a private Google Sheets test container
 3. Copy files into Apps Script
 4. Run T01–T15 using only controlled test data
