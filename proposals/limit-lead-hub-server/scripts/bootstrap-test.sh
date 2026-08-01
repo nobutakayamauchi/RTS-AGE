@@ -5,11 +5,23 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 cd "$HERE"
 
+PYTHON_BIN="${LLH_PYTHON_BIN:-}"
+if [[ -z "$PYTHON_BIN" ]]; then
+  if command -v python3 >/dev/null 2>&1; then
+    PYTHON_BIN="python3"
+  elif command -v python >/dev/null 2>&1; then
+    PYTHON_BIN="python"
+  else
+    printf '%s\n' 'Neither python3 nor python is available. Stop without changing anything.' >&2
+    exit 1
+  fi
+fi
+
 if [[ ! -f .env ]]; then
   cp .env.example .env
-  ADMIN_PASSWORD="$(python -c 'import secrets; print(secrets.token_urlsafe(18))')"
-  ACTION_TOKEN="$(python -c 'import secrets; print(secrets.token_urlsafe(32))')"
-  python - "$ADMIN_PASSWORD" "$ACTION_TOKEN" <<'PY'
+  ADMIN_PASSWORD="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(18))')"
+  ACTION_TOKEN="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_urlsafe(32))')"
+  "$PYTHON_BIN" - "$ADMIN_PASSWORD" "$ACTION_TOKEN" <<'PY'
 from pathlib import Path
 import sys
 path = Path('.env')
@@ -25,7 +37,7 @@ else
 fi
 
 mkdir -p data run
-python -m py_compile app.py
+"$PYTHON_BIN" -m py_compile app.py
 
 if [[ -f run/limit-lead-hub.pid ]] && kill -0 "$(cat run/limit-lead-hub.pid)" 2>/dev/null; then
   printf '%s\n' 'Limit Lead Hub test process is already running.'
