@@ -23,8 +23,9 @@ Limit Lead Hub Server MVP
 
 - `proposals/limit-lead-hub-server/**`
 - isolated server proposal
-- loopback-only test
+- loopback-only validation
 - synthetic test data
+- restricted HTTPS publication of the public form, starter kit, privacy page, and unsubscribe flow
 
 ### Protected
 
@@ -33,12 +34,12 @@ Limit Lead Hub Server MVP
 - production `.env`
 - live LINE/X accounts
 - real customer data
-- public deployment
+- admin, CSV, OpenAPI, docs, health, and internal API routes from public access
 - `main` direct push
 
 ## STATUS
 
-`PROPOSAL_BUILT / SERVER_LIVE_UNVERIFIED`
+`SERVER_MVP_COMPLETE / PUBLICATION_APPROVED_IN_PROGRESS`
 
 ## EVIDENCE
 
@@ -46,31 +47,35 @@ Limit Lead Hub Server MVP
 - Google Apps Script dependency removed from canonical design: PASS
 - SQLite schema present: PASS
 - public form / admin / CSV / unsubscribe source present: PASS
-- server syntax check: PENDING
-- loopback boot: PENDING
-- live browser test: PENDING
-- backup/restore: PENDING
-- reverse proxy/TLS: PENDING
-- real delivery adapter: PENDING
+- self-hosted starter-kit ZIP and privacy page present: PASS
+- server syntax/import check: PASS
+- loopback boot on `127.0.0.1:8090`: PASS
+- synthetic email / LINE / X / multi-channel flows: PASS
+- admin auth / CSV / delivery transitions / unsubscribe: PASS
+- SQLite backup/restore and integrity: PASS
+- public routing boundary inspected: PASS
+- restricted Caddy publication template: PASS
+- reverse proxy/TLS live publication: IN_PROGRESS
+- real email delivery adapter: PENDING
 
 ## RECOVERY
 
-- Code: branch commit or draft PR
+- Code: branch commit or PR #77
 - Runtime: SQLite `.backup`
-- Bad deploy: stop the new service and restore previous SQLite copy
+- Bad deploy: stop `limit-lead-hub.service`, stop Caddy, and restore the previous SQLite copy
 - Channel failure: retain ledger and replace only the channel adapter
 - Google variant: closed draft PR #76 remains reference-only
 
 ## NEXT ACTION
 
-1. Open draft PR
-2. Pull branch to the server without touching the running 8082 service
-3. create test `.env`
-4. run syntax/import check
-5. start on `127.0.0.1:8090`
-6. execute synthetic tests
-7. record results in Issue #75
+1. merge reviewed PR #77
+2. install the application as an independent systemd service on loopback port 8090
+3. install Caddy without exposing admin/internal routes
+4. publish through a temporary HTTPS hostname
+5. verify externally from a non-server client
+6. delete synthetic runtime data before accepting real leads
+7. record deployment evidence in Issue #75
 
 ## PRODUCTION GATE
 
-Production remains `NOT_APPROVED` until configuration secrets are changed, synthetic tests pass, backup/restore succeeds, and the public/admin routing boundary is reviewed.
+Public form publication is approved by the user. Real lead acceptance remains gated on successful external HTTPS verification, removal of synthetic data, confirmed admin-route denial, and a fresh SQLite backup.
