@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>配信停止の確認</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1f2937; }
+      .card { border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; }
+      button { padding: 12px 18px; border: 0; border-radius: 10px; background: #991b1b; color: white; font-weight: 700; cursor: pointer; }
+      button:disabled { opacity: .55; }
+      .message { margin-top: 16px; padding: 12px; border-radius: 10px; background: #f1f5f9; }
+    </style>
+  </head>
+  <body>
+    <section class="card">
+      <h1>配信停止の確認</h1>
+      <p>このページを開いただけでは停止されません。停止する場合は、下のボタンを押してください。</p>
+      <button id="confirm" type="button">配信を停止する</button>
+      <div id="message" class="message" hidden></div>
+    </section>
+    <script>
+      const token = <?!= JSON.stringify(token) ?>;
+      const scope = <?!= JSON.stringify(scope) ?>;
+      const button = document.getElementById('confirm');
+      const message = document.getElementById('message');
+
+      button.addEventListener('click', () => {
+        button.disabled = true;
+        button.textContent = '処理しています…';
+        google.script.run
+          .withSuccessHandler((result) => {
+            message.textContent = result.message || '配信停止を受け付けました。';
+            message.hidden = false;
+            button.textContent = '配信停止済み';
+          })
+          .withFailureHandler((error) => {
+            message.textContent = error && error.message ? error.message : '処理できませんでした。';
+            message.hidden = false;
+            button.disabled = false;
+            button.textContent = 'もう一度試す';
+          })
+          .confirmUnsubscribe(token, scope);
+      });
+    </script>
+  </body>
+</html>
