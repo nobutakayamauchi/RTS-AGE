@@ -34,6 +34,7 @@ email / LINE / X
 - Xの自動・大量DMは使わない
 - 秘密情報をソースコードへ置かない
 - 実データをGitHubへ置かない
+- 配信停止は確認ボタンを押す二段階方式
 - 失敗時もフォーム申請そのものを消さず、再送可能な状態を残す
 
 ## ファイル
@@ -47,6 +48,7 @@ email / LINE / X
 | `docs/SETUP.md` | 初期構築と公開手順 |
 | `docs/OPERATIONS.md` | 日々の運用、LINE/X手動配布、障害対応 |
 | `docs/PRIVACY-CHECKLIST.md` | 利用目的・同意・保管に関する実装チェック |
+| `tests/static-contract.test.cjs` | Nodeで再現できる静的契約テスト |
 | `tests/MANUAL-TEST-PLAN.md` | 実機テスト項目 |
 | `RTS-LITE.md` | 正本、変更範囲、証拠、復旧、次の一手 |
 
@@ -64,6 +66,12 @@ email / LINE / X
 10. `Limit Lead Hub → トリガーを設定`
 
 詳細は `docs/SETUP.md` を参照してください。
+
+静的契約テストは、このディレクトリで実行します。
+
+```bash
+node tests/static-contract.test.cjs
+```
 
 ## 無料枠について
 
