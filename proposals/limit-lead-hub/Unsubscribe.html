@@ -10,18 +10,21 @@
       button { padding: 12px 18px; border: 0; border-radius: 10px; background: #991b1b; color: white; font-weight: 700; cursor: pointer; }
       button:disabled { opacity: .55; }
       .message { margin-top: 16px; padding: 12px; border-radius: 10px; background: #f1f5f9; }
+      .hidden { display: none; }
     </style>
   </head>
   <body>
     <section class="card">
       <h1>配信停止の確認</h1>
       <p>このページを開いただけでは停止されません。停止する場合は、下のボタンを押してください。</p>
+      <input id="token" class="hidden" type="hidden" value="<?= token ?>">
+      <input id="scope" class="hidden" type="hidden" value="<?= scope ?>">
       <button id="confirm" type="button">配信を停止する</button>
       <div id="message" class="message" hidden></div>
     </section>
     <script>
-      const token = <?!= JSON.stringify(token) ?>;
-      const scope = <?!= JSON.stringify(scope) ?>;
+      const token = document.getElementById('token').value;
+      const scope = document.getElementById('scope').value;
       const button = document.getElementById('confirm');
       const message = document.getElementById('message');
 
