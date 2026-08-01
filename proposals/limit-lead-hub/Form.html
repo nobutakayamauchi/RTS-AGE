@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>限界開発スターターキット 受取申請</title>
+    <style>
+      :root { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1f2937; background: #f8fafc; }
+      body { margin: 0; }
+      main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+      .card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(15, 23, 42, .06); }
+      h1 { margin-top: 0; font-size: clamp(1.55rem, 4vw, 2.2rem); }
+      h2 { font-size: 1.1rem; margin-top: 28px; }
+      .muted { color: #64748b; }
+      .grid { display: grid; gap: 14px; }
+      label { display: block; font-weight: 600; }
+      input[type="text"], input[type="email"], textarea, select { width: 100%; box-sizing: border-box; margin-top: 6px; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 10px; font: inherit; }
+      textarea { min-height: 88px; resize: vertical; }
+      .channel { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 14px; border: 1px solid #dbeafe; border-radius: 12px; background: #f8fbff; }
+      .channel small { display: block; color: #64748b; margin-top: 3px; }
+      .conditional { display: none; padding-left: 38px; }
+      .conditional.visible { display: block; }
+      .checkline { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-weight: 400; }
+      button { width: 100%; padding: 13px 16px; border: 0; border-radius: 12px; background: #111827; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; }
+      button:disabled { opacity: .55; cursor: wait; }
+      .notice { padding: 12px 14px; border-radius: 10px; background: #fff7ed; border: 1px solid #fed7aa; }
+      .result { display: none; margin-top: 18px; padding: 18px; border-radius: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; }
+      .error { display: none; margin-top: 18px; padding: 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+      .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+      a { color: #1d4ed8; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1><?= appConfig.kitName ?> を受け取る</h1>
+        <p class="muted">現在の配布版: <?= appConfig.kitVersion ?></p>
+        <p>メール・LINE・Xのうち、最低一つを選んでください。複数選択もできます。</p>
+        <div class="notice">LINEとXは、申請後に表示される受付番号をあなたから送ってもらう受動方式です。こちらから一方的な大量DMは行いません。</div>
+
+        <form id="lead-form" class="grid" novalidate>
+          <label>
+            お名前・呼び名（任意）
+            <input name="displayName" type="text" maxlength="120" autocomplete="name">
+          </label>
+
+          <h2>受取方法</h2>
+
+          <div class="channel">
+            <input id="channel-email" name="channelEmail" type="checkbox">
+            <label for="channel-email">メール<small>キットの受取リンクを自動送信。更新版も確実に受け取りたい方に向いています。</small></label>
+          </div>
+          <div id="email-fields" class="conditional">
+            <label>メールアドレス<input name="email" type="email" maxlength="254" autocomplete="email"></label>
+          </div>
+
+          <div class="channel">
+            <input id="channel-line" name="channelLine" type="checkbox">
+            <label for="channel-line">LINE<small>申請後、LINE公式アカウントへ受付番号を送って受け取ります。</small></label>
+          </div>
+          <div id="line-fields" class="conditional">
+            <label>LINE表示名（任意）<input name="lineName" type="text" maxlength="120"></label>
+          </div>
+
+          <div class="channel">
+            <input id="channel-x" name="channelX" type="checkbox">
+            <label for="channel-x">X<small>申請後、DMまたは指定投稿への返信で受付番号を送って受け取ります。</small></label>
+          </div>
+          <div id="x-fields" class="conditional">
+            <label>Xアカウント名<input name="xHandle" type="text" maxlength="16" placeholder="@example"></label>
+          </div>
+
+          <label>
+            優先受取方法（任意）
+            <select name="preferredChannel">
+              <option value="">指定なし</option>
+              <option value="email">メール</option>
+              <option value="line">LINE</option>
+              <option value="x">X</option>
+            </select>
+          </label>
+
+          <h2>受け取りたい情報</h2>
+          <label class="checkline"><input name="consentDelivery" type="checkbox" required><span><strong>必須：</strong>スターターキットの送付・受取確認のため、選択した連絡先を利用することに同意します。</span></label>
+          <label class="checkline"><input name="consentUpdates" type="checkbox"><span>スターターキットの更新版、互換性変更、差し替え情報を受け取ります。</span></label>
+          <label class="checkline"><input name="consentOffers" type="checkbox"><span>限界開発に関連する新しい無料配布物・サービス案内を受け取ります。</span></label>
+
+          <? if (appConfig.privacyPolicyUrl) { ?>
+            <p class="muted">送信前に<a href="<?= appConfig.privacyPolicyUrl ?>" target="_blank" rel="noopener">個人情報の利用目的・取扱方針</a>を確認してください。</p>
+          <? } ?>
+
+          <label>
+            備考（任意）
+            <textarea name="notes" maxlength="500" placeholder="受取上の事情など"></textarea>
+          </label>
+
+          <div class="honeypot" aria-hidden="true">
+            <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
+          </div>
+
+          <input name="source" type="hidden" value="limit_lead_hub_web">
+          <button id="submit-button" type="submit">無料で受取申請する</button>
+        </form>
+
+        <div id="error" class="error" role="alert"></div>
+        <div id="result" class="result" tabindex="-1"></div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById('lead-form');
+      const button = document.getElementById('submit-button');
+      const errorBox = document.getElementById('error');
+      const resultBox = document.getElementById('result');
+
+      const channelBindings = [
+        ['channel-email', 'email-fields'],
+        ['channel-line', 'line-fields'],
+        ['channel-x', 'x-fields'],
+      ];
+
+      for (const [checkboxId, fieldsId] of channelBindings) {
+        const checkbox = document.getElementById(checkboxId);
+        const fields = document.getElementById(fieldsId);
+        const update = () => fields.classList.toggle('visible', checkbox.checked);
+        checkbox.addEventListener('change', update);
+        update();
+      }
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+
+        const data = Object.fromEntries(new FormData(form).entries());
+        data.channelEmail = document.getElementById('channel-email').checked;
+        data.channelLine = document.getElementById('channel-line').checked;
+        data.channelX = document.getElementById('channel-x').checked;
+        data.consentDelivery = form.elements.consentDelivery.checked;
+        data.consentUpdates = form.elements.consentUpdates.checked;
+        data.consentOffers = form.elements.consentOffers.checked;
+
+        if (!data.channelEmail && !data.channelLine && !data.channelX) {
+          showError('メール・LINE・Xのうち、最低一つを選択してください。');
+          return;
+        }
+        if (!data.consentDelivery) {
+          showError('スターターキット送付のための同意が必要です。');
+          return;
+        }
+
+        button.disabled = true;
+        button.textContent = '申請を登録しています…';
+
+        google.script.run
+          .withSuccessHandler(showSuccess)
+          .withFailureHandler((error) => showError(error && error.message ? error.message : '登録に失敗しました。'))
+          .submitLead(data);
+      });
+
+      function showSuccess(response) {
+        button.disabled = false;
+        button.textContent = '申請済み';
+        form.style.display = 'none';
+        const items = (response.instructions || []).map((text) => `<li>${escapeHtml(text)}</li>`).join('');
+        const lineLink = response.lineAddUrl ? `<p><a href="${escapeAttribute(response.lineAddUrl)}" target="_blank" rel="noopener">LINE公式アカウントを開く</a></p>` : '';
+        const xLink = response.xProfileUrl ? `<p><a href="${escapeAttribute(response.xProfileUrl)}" target="_blank" rel="noopener">Xアカウントを開く</a></p>` : '';
+        resultBox.innerHTML = `<h2>申請を受け付けました</h2><p>受付番号：<strong>${escapeHtml(response.leadId)}</strong></p><p>この番号は、LINE・Xとの照合や再送時に使います。</p><ul>${items}</ul>${lineLink}${xLink}`;
+        resultBox.style.display = 'block';
+        resultBox.focus();
+      }
+
+      function showError(message) {
+        button.disabled = false;
+        button.textContent = '無料で受取申請する';
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]));
+      }
+
+      function escapeAttribute(value) {
+        return escapeHtml(value);
+      }
+    </script>
+  </body>
+</html>
