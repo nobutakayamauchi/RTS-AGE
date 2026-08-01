@@ -46,7 +46,7 @@ else
 fi
 
 mkdir -p data run
-"$PYTHON_BIN" -m py_compile app.py
+"$PYTHON_BIN" -m py_compile app.py kit_app.py
 
 if [[ -f run/limit-lead-hub.pid ]] && kill -0 "$(cat run/limit-lead-hub.pid)" 2>/dev/null; then
   printf '%s\n' 'Limit Lead Hub test process is already running.'
@@ -71,7 +71,7 @@ else
     RUNNER=(uv run uvicorn)
   fi
 
-  nohup "${RUNNER[@]}" app:app --host 127.0.0.1 --port 8090 \
+  nohup "${RUNNER[@]}" kit_app:app --host 127.0.0.1 --port 8090 \
     > run/limit-lead-hub.log 2>&1 &
   echo $! > run/limit-lead-hub.pid
 fi
@@ -95,6 +95,12 @@ Loopback test is running.
 
 Public form:
   http://127.0.0.1:8090/lead/apply
+
+Starter kit:
+  http://127.0.0.1:8090/kit
+
+Privacy policy:
+  http://127.0.0.1:8090/lead/privacy
 
 Admin:
   http://127.0.0.1:8090/lead/admin
