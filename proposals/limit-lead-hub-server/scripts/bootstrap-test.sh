@@ -40,8 +40,12 @@ else
   . ./.env
   set +a
 
-  if [[ -x "$ROOT/.venv/bin/uvicorn" ]]; then
+  if [[ -n "${LLH_UVICORN_BIN:-}" && -x "$LLH_UVICORN_BIN" ]]; then
+    RUNNER=("$LLH_UVICORN_BIN")
+  elif [[ -x "$ROOT/.venv/bin/uvicorn" ]]; then
     RUNNER=("$ROOT/.venv/bin/uvicorn")
+  elif [[ -x /home/ubuntu/RTS-AGE/.venv/bin/uvicorn ]]; then
+    RUNNER=(/home/ubuntu/RTS-AGE/.venv/bin/uvicorn)
   else
     RUNNER=(uv run uvicorn)
   fi
