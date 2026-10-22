@@ -1,0 +1,19 @@
+__PUBLIC_HOST__ {
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy no-referrer
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+    }
+
+    @root path /
+    redir @root /lead/apply 302
+
+    @public path /lead/apply /lead/privacy /lead/unsubscribe /api/leads /api/unsubscribe /kit /kit/latest
+    reverse_proxy @public 127.0.0.1:8090
+
+    respond 404
+}
